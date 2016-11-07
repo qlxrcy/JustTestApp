@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<audio controls="controls" autoplay="autoplay"></audio>
+<script type="text/javascript" th:src="@{/js/audio/recorder.js}">
+</script>
+<script type="text/javascript" th:src="@{/js/jquery-2.1.1.js}">
+</script>
+
+<input onclick="startRecording()" type="button" value="start recording" />
+<input onclick="stopRecording()" type="button"
+       value="stop recording and play" />
+<input type="text" id="aaa" value="" />
+<input type="text" id="t" value="${method1.result}"/>
+<script>
+    var onFail = function(e) {
+        console.log('Rejected!', e);
+    };
+
+    var onSuccess = function(s) {
+        var context = new AudioContext();
+        var mediaStreamSource = context.createMediaStreamSource(s);
+        recorder = new Recorder(mediaStreamSource);
+        recorder.record();
+
+        // audio loopback
+        // mediaStreamSource.connect(context.destination);
+    }
+
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia = navigator.getUserMedia
+            || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+            || navigator.msGetUserMedia;
+
+    var recorder;
+    var audio = document.querySelector('audio');
+
+    function startRecording() {
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia({audio : true}, onSuccess, onFail);
+        } else {
+            console.log('navigator.getUserMedia not present');
+        }
+    }
+
+    function stopRecording() {
+        recorder.stop();
+        recorder.exportWAV(function(blob) {
+
+            //1.send request
+            var reader = new FileReader();
+            reader.readAsDataURL(blob);
+            //reader.readAsBinaryString(blob);
+            //reader.readAsText(blob);
+            reader.onloadend = function() {
+                var data = reader.result;
+                $.post('../save', {'message' : data}, function() {
+                    document.getElementById("aaa").value = data;
+                    console.log(data);
+                });
+
+                //$.post('../messageSave', {'message' : encodeURIComponent(data)}, function() {
+                //document.getElementById("aaa").value = encodeURIComponent(data);
+                //});
+
+
+                // 						$.reqJson({
+                // 							//url : this.IMServerPath + '/messageSave',
+                // 							url : '/messageSave',
+                // 							data : param,
+                // 							success : function(json) {
+                // 								if ('ok' == json.result) {
+                // 								} else {
+                // 								}
+                // 							},
+                // 							error : function() {
+                // 								me.msgSendErr(li, msg, msgtype);
+                // 							}
+                // 						});
+
+                // 						me.fireEvent('dataloaded', data);
+                // 						console.log(data);
+            };
+
+            //2.
+            // 					audio.src = window.URL.createObjectURL(blob);
+        });
+    }
+
+</script>
+</body>
+</html>

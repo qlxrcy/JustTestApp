@@ -20,17 +20,18 @@ import javax.xml.bind.DatatypeConverter;
 public class BaiDuYuYinSamlpe {
     private static final String serverURL = "http://vop.baidu.com/server_api";
     private static String token = "";
-    private static final String testFileName = "C:/Users/le.qi/Desktop/test.pcm";
+    //private static final String testFileName = "C:/Users/le.qi/Desktop/test.pcm";
+    private static final String testFileName = "C:/Users/le.qi/Desktop/Record.wav";
     //put your own params here
     private static final String apiKey = "MuoRBHWZ7ger0WoAGarFYQhb";
     private static final String secretKey = "72235d62c3ddf5335f183055844715b6";
     private static final String cuid = "8828740";
 
-    /*public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         getToken();
         method1();
-        method2();
-    }*/
+        //method2();
+    }
 
     private static void getToken() throws Exception {
         String getTokenURL = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials" +
@@ -45,7 +46,7 @@ public class BaiDuYuYinSamlpe {
 
         // construct params
         JSONObject params = new JSONObject();
-        params.put("format", "pcm");
+        params.put("format", "wav");
         params.put("rate", 8000);
         params.put("channel", "1");
         params.put("token", token);
@@ -76,7 +77,7 @@ public class BaiDuYuYinSamlpe {
 
         // add request header
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "audio/pcm; rate=8000");
+        conn.setRequestProperty("Content-Type", "audio/wav; rate=8000");
 
         conn.setDoInput(true);
         conn.setDoOutput(true);

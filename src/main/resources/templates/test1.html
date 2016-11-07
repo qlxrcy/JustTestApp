@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+<div>
+    <!--<audio controls autoplay></audio>-->
+    <audio controls="controls" autoplay="autoplay"></audio>
+    <input onclick="startRecording()" type="button" value="录音" />
+    <input onclick="stopRecording()" type="button" value="停止" />
+    <input onclick="playRecording()" type="button" value="播放" />
+    <input onclick="stopAndSave()" type="button" value="保存" />
+
+    <input type="text" id="aaa" value="" />
+</div>
+
+<script type="text/javascript" th:src="@{/js/audio/HZRecorder.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-2.1.1.js}" />
+
+
+<script>
+
+    var recorder;
+
+    var audio = document.querySelector('audio');
+
+    function startRecording() {
+        HZRecorder.get(function (rec) {
+            recorder = rec;
+            recorder.start();
+        });
+    }
+
+    function stopRecording() {
+        recorder.stop();
+    }
+
+    function playRecording() {
+        recorder.play(audio);
+    }
+
+    function stopAndSave() {
+        recorder.stop();
+        recorder.save();
+    }
+</script>
+
+</body>
+</html>
