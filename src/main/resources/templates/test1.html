@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -12,8 +12,13 @@
     <input onclick="stopRecording()" type="button" value="停止" />
     <input onclick="playRecording()" type="button" value="播放" />
     <input onclick="stopAndSave()" type="button" value="保存" />
+    <input onclick="stopAndAjaxSave()" type="button" value="保存1" />
 
-    <input type="text" id="aaa" value="" />
+    <p th:text="${result}"></p>
+    <div th:text="${result}">
+        Some Success message ${result}
+    </div>
+    <p id="result"></p>
 </div>
 
 <script type="text/javascript" th:src="@{/js/audio/HZRecorder.js}"></script>
@@ -44,6 +49,10 @@
     function stopAndSave() {
         recorder.stop();
         recorder.save();
+    }
+    function stopAndAjaxSave() {
+        recorder.stop();
+        recorder.ajaxSave();
     }
 </script>
 

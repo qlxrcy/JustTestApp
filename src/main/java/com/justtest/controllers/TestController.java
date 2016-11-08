@@ -1,8 +1,12 @@
 package com.justtest.controllers;
 
+import antlr.StringUtils;
 import com.justtest.utils.json.JSONObject;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,19 +41,42 @@ public class TestController {
         return"/iat";
     }
 
-    @RequestMapping(value="/save")
-    public String save(HttpServletRequest request,Map<String,Object> map){
-        String data = request.getParameter("message");
-
+    @ResponseBody
+    @RequestMapping(value="/ajaxSave")
+    public String ajaxSave(@RequestParam("message") String message){//, Map<String,Object> map, HttpServletRequest request){
+//        String data = request.getParameter("message");
+        String result="";
         try {
-            decoderBase64File(data.replace("data:audio/wav;base64,", ""),"C:/Users/le.qi/Desktop/Record.wav");
-            getToken();
-            String method1 = method1(data.replace("data:audio/wav;base64,", ""));
-            map.put("method1",method1);
+            if(token.isEmpty()){
+                getToken();
+            }
+            String method1 = method1(message.replace("data:audio/wav;base64,", ""));
+            JSONObject jsonObject = new JSONObject(method1);
+            result = new JSONObject(method1).get("result").toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "/test";
+        return result;
+    }
+
+    @RequestMapping(value="/save")
+    public String save( HttpServletRequest request,Model model){
+        String data = request.getParameter("message");
+        String result="";
+        try {
+            //decoderBase64File(data.replace("data:audio/wav;base64,", ""),"C:/Users/le.qi/Desktop/Record.wav");
+            if(token.isEmpty()){
+                getToken();
+            }
+            String method1 = method1(data.replace("data:audio/wav;base64,", ""));
+            JSONObject jsonObject = new JSONObject(method1);
+            //System.out.println(jsonObject.get("result"));
+            result = new JSONObject(method1).get("result").toString();
+            model.addAttribute("result",result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "/test1";
     }
     /**
      * 将base64字符解码保存文件

@@ -135,12 +135,34 @@
             //reader.readAsText(blob);
             reader.onloadend = function() {
                 var data = reader.result;
-                $.post('../save', {'message' : data}, function() {
+                $.post('./save', {'message' : data}, function() {
                     //document.getElementById("aaa").value = method1;
                     //console.log();
                 });
             }
 
+        }
+        
+        this.ajaxSave = function () {
+            var reader = new FileReader();
+            reader.readAsDataURL(this.getBlob());
+            //reader.readAsBinaryString(blob);
+            //reader.readAsText(blob);
+            reader.onloadend = function() {
+                var data = reader.result;
+            $.ajax({
+                url:"/ajaxSave",
+                data:{
+                    message:data
+                },
+                type:"POST",
+                dataType:"text",
+                success:function(text){
+                    // alert(text);
+                    $("#result").text(text);
+                }
+            });
+            }
         }
 
         //音频采集
